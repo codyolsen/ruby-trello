@@ -89,9 +89,13 @@ module Trello
 
       # Create a new card and save it on Trello.
       #
-      # If using source_card_id to duplicate a card, make sure to save
+      # If using `source_card_id` to duplicate a card, make sure to save
       # the source card to Trello before calling this method to assure
-      # the correct data is used in the duplication.
+      # the correct data is used in the duplication. When copying an 
+      # existing card into a new card with `source_card_id`, checklist items
+      # are always unchecked and due dates are never marked as complete
+      # regardless of their corresponding values in the source card.
+      #
       #
       # @param [Hash] options
       # @option options [String] :name The name of the new card.
@@ -109,7 +113,8 @@ module Trello
       # @option options [String] :source_card_id ID of the card to copy
       # @option options [String] :source_card_properties A single, or array of,
       #     string properties to copy from source card.
-      #     `"all"`, `"checklists"`, `"due"`, `"members"`, or `nil`.
+      #     `"all"`, `"attachments"`, `"checklists"`, `"comments"`, `"due"`, 
+      #     `"labels"`, `"members"`, `"stickers"`, or `nil`.
       #     Defaults to `"all"`.
       #
       # @raise [Trello::Error] if the card could not be created.
@@ -126,7 +131,7 @@ module Trello
           'due_complete' => options[:due_complete] || false,
           'pos' => options[:pos],
           'idCardSource' => options[:source_card_id],
-          'keepFromSource' => options.key?(:source_card_properties) ? options[:source_card_properties] : 'all'
+          'keepFromSource' => options[:source_card_properties] || 'all'
         )
       end
     end
